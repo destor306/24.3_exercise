@@ -1,19 +1,16 @@
 """Flask app for Cupcakes"""
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for
 from models import db, connect_db, Cupcake
+from forms import CupcakeForm
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///cupcakes'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
+app.config['SECRET_KEY'] = "this is my secret_key"
 
 connect_db(app)
-
-
-@app.route('/')
-def index_page():
-    cupcakes = Cupcake.query.all()
-    return render_template('index.html', cupcakes=cupcakes)
 
 
 @app.route("/api/cupcakes")
@@ -66,3 +63,29 @@ def delete_cupcake(id):
     db.session.delete(cupcake)
     db.session.commit()
     return jsonify(msg="deleted")
+
+
+###################### API ###################
+
+
+@app.route('/', methods=["GET", "POST"])
+def index_page():
+    form = CupcakeForm()
+    cupcakes = Cupcake.query.all()
+
+    if form.validate_on_submit():
+        print("it's valid on submit")
+        new_cupcake = Cupcake(
+            flavor=form.flavor.data,
+            size=form.size.data,
+            rating=form.rating.data,
+            image=form.image.data
+        )
+        db.session.add(new_cupcake)
+        db.session.commit()
+        # Redirect back to the index page
+        return redirect('/')
+    else:
+        print("Form errors", form.errors)
+
+    return render_template('index.html', form=form, )

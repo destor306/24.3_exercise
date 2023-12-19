@@ -44,6 +44,7 @@ $(document).ready(function(){
     cupcakeManager.fetchAllCupcakes();
 
     $('#add-cupcake-form').on('submit', function(e){
+        console.log("sdklfjsdklfjl")
         e.preventDefault();
         const cupcakeData = {
             flavor: $('#flavor').val(),

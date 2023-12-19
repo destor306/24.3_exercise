@@ -22,7 +22,23 @@
     <li>{{cupcake.flavor}} - <button class="delete-cupcake" data-id="{{cupcake.id}}">X</button></li>
     {% endfor %} -->
     <h2>Add Cupcake</h2>
-    <form id="add-cupcake-form">
+    
+    <form method ="POST" id ="#add-cupcake-form">
+      {{ form.hidden_tag() }}
+      {% for field in form if field.widget.input_type !='hidden' %}
+      <div class="form-group">
+        {{field.label}}
+        {{field(class_="form-control")}}
+        {%for err in field.errors%}
+        {{err}}
+        {%endfor%}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+    
+    
+    <!-- <form id="add-cupcake-form">
         <label for="flavor">flavor</label>
         <input type="text" name="flavor" id="flavor">
         <label for="rating">rating</label>
@@ -32,7 +48,7 @@
         <label for="image">image</label>
         <input type="text" name="image" id="image">
         <button type="submit" class="btn btn-success">Submit</button>
-    </form>
+    </form> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"
     integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>
     <script
